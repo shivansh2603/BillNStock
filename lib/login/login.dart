@@ -1,4 +1,6 @@
+import 'package:bill_n_stock/Util.dart';
 import 'package:bill_n_stock/create_account/create_account.dart';
+import 'package:bill_n_stock/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -46,7 +48,10 @@ class SignInPage extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, smoothRoute(const HomeScreen()));
+                    },
+
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.black,
@@ -73,38 +78,7 @@ class SignInPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        PageRouteBuilder(
-                          transitionDuration: const Duration(milliseconds: 400),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  const CreateAccountPage(),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                                final slide =
-                                    Tween<Offset>(
-                                      begin: const Offset(0.0, 0.1),
-                                      end: Offset.zero,
-                                    ).animate(
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOutCubic,
-                                      ),
-                                    );
-
-                                final fade = Tween<double>(
-                                  begin: 0.0,
-                                  end: 1.0,
-                                ).animate(animation);
-
-                                return FadeTransition(
-                                  opacity: fade,
-                                  child: SlideTransition(
-                                    position: slide,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                        ),
+                        smoothRoute(const CreateAccountPage()),
                       );
                     },
 
