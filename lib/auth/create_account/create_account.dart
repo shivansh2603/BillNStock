@@ -1,17 +1,34 @@
+import 'package:bill_n_stock/auth/create_account/create_account_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => CreateAccountState(),
+      child: const _CreateAccountView(),
+    );
+  }
+}
+
+class _CreateAccountView extends StatelessWidget {
+  const _CreateAccountView();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<CreateAccountState>();
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,23 +53,40 @@ class CreateAccountPage extends StatelessWidget {
 
                 const SizedBox(height: 40),
 
-                _buildTextField(hint: 'Full Name'),
+                _buildTextField(
+                  hint: 'Username',
+                  controller: state.usernameController,
+                ),
                 const SizedBox(height: 16),
 
-                _buildTextField(hint: 'Username / Email'),
+                _buildTextField(
+                  hint: 'Mobile Number',
+                  controller: state.contactNumberController,
+                  keyboardType: TextInputType.phone,
+                ),
                 const SizedBox(height: 16),
 
-                _buildTextField(hint: 'Password', obscure: true),
+                _buildTextField(
+                  hint: 'Password',
+                  controller: state.passwordController,
+                  obscure: true,
+                ),
                 const SizedBox(height: 16),
 
-                _buildTextField(hint: 'Re-enter Password', obscure: true),
+                _buildTextField(
+                  hint: 'Re-enter Password',
+                  controller: state.confirmPasswordController,
+                  obscure: true,
+                ),
 
                 const SizedBox(height: 32),
 
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: state.isLoading
+                        ? null
+                        : () => state.createAccount(context),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.black,
@@ -62,13 +96,22 @@ class CreateAccountPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text(
-                      'Create Account',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: state.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                   ),
                 ),
 
@@ -76,9 +119,7 @@ class CreateAccountPage extends StatelessWidget {
 
                 Center(
                   child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                     child: const Text(
                       'Already have an account? Sign In',
                       style: TextStyle(
@@ -96,9 +137,16 @@ class CreateAccountPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField({required String hint, bool obscure = false}) {
+  Widget _buildTextField({
+    required String hint,
+    required TextEditingController controller,
+    bool obscure = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscure,
+      keyboardType: keyboardType,
       cursorColor: Colors.black,
       decoration: InputDecoration(
         hintText: hint,

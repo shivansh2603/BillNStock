@@ -1,7 +1,13 @@
-import 'package:bill_n_stock/Util.dart';
-import 'package:bill_n_stock/login/login.dart';
+import 'package:bill_n_stock/helper/Util.dart';
+import 'package:bill_n_stock/home/bill/bill_screen.dart';
+import 'package:bill_n_stock/home/bill/bill_state.dart';
+import 'package:bill_n_stock/home/inventory/inventory.dart';
+import 'package:bill_n_stock/home/inventory/inventory_state.dart';
+import 'package:bill_n_stock/auth/login/login.dart';
+import 'package:bill_n_stock/helper/pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -67,7 +73,10 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
+                    await Pref.removeValue(PreferenceKey.isLogin.toString());
+                    await Pref.removeValue(PreferenceKey.userData.toString());
+
                     Navigator.pushAndRemoveUntil(
                       context,
                       smoothRoute(const SignInPage()),
@@ -89,15 +98,37 @@ class HomeScreen extends StatelessWidget {
               _homeCard(
                 title: 'Create Bill',
                 icon: Icons.receipt_long,
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider(
+                        create: (_) => BillState(),
+                        child: const BillScreen(),
+                      ),
+                    ),
+                  );
+                },
               ),
+
               const Divider(height: 1),
 
               _homeCard(
                 title: 'Inventory',
                 icon: Icons.inventory_2_outlined,
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider(
+                        create: (_) => InventoryState(),
+                        child: const InventoryScreen(),
+                      ),
+                    ),
+                  );
+                },
               ),
+
               const Divider(height: 1),
 
               _homeCard(
