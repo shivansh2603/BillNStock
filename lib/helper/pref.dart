@@ -80,7 +80,7 @@ extension CustomSizer on BuildContext {
       MediaQuery.of(this).size.width * (designWidth / viewportWidth);
 
   // Provides a vertically measured size respective to `height` and `viewportHeight`
-  double getHeigth(double designHeight, {double viewportHeight = 915}) =>
+  double getHeight(double designHeight, {double viewportHeight = 915}) =>
       MediaQuery.of(this).size.height * (designHeight / viewportHeight);
 
   // double getSize(double designWidth, double designHeight, {double viewportWidth = 360, double viewportHeight = 915,}) => MediaQuery.of(this).size

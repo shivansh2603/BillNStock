@@ -20,6 +20,11 @@ enum UrlEndPoint {
   inventoryItemList,
   addCustomerDetailsOrCheck,
   saveBill,
+  userHistory,
+  userDetailSimple,
+  customerEditApi,
+  updateProductPrice,
+  validateUsername,
 }
 
 extension UrlEndPointExtention on UrlEndPoint {
@@ -38,6 +43,16 @@ extension UrlEndPointExtention on UrlEndPoint {
         return "api/customers/save";
       case UrlEndPoint.saveBill:
         return "api/bills/save";
+      case UrlEndPoint.userHistory:
+        return "api/customers/customerListByUser/";
+      case UrlEndPoint.userDetailSimple:
+        return "api/customers/details/";
+      case UrlEndPoint.customerEditApi:
+        return "api/bills/pay-remaining/";
+      case UrlEndPoint.updateProductPrice:
+        return "api/products/update/";
+      case UrlEndPoint.validateUsername:
+        return "auth/validate-username";
     }
   }
 }

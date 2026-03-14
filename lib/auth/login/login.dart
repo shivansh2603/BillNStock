@@ -17,83 +17,156 @@ class SignInPage extends StatelessWidget {
             value: SystemUiOverlayStyle.dark,
             child: Scaffold(
               backgroundColor: Colors.white,
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  child: Padding(
+              body: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: SafeArea(
+                  child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 80),
 
+                        // Logo/Icon Section with light blue accent
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFFE3F2FD,
+                            ), // Light blue background
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.lock_outline,
+                            size: 40,
+                            color: Color(0xFF1976D2), // Darker blue for icon
+                          ),
+                        ),
+
                         const Text(
-                          'Welcome',
+                          'Welcome Back 👋',
                           style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF1565C0), // Dark blue for title
                           ),
                         ),
 
                         const SizedBox(height: 8),
+
                         const Text(
                           'Sign in to continue',
-                          style: TextStyle(color: Colors.black54),
+                          style: TextStyle(
+                            color: Color(
+                              0xFF546E7A,
+                            ), // Grayish blue for subtitle
+                          ),
                         ),
 
                         const SizedBox(height: 40),
+                        authTextField(
+                          hint: 'Enter your username',
 
-                        _textField(
-                          hint: 'Email',
                           controller: state.usernameController,
                         ),
 
                         const SizedBox(height: 16),
 
-                        _textField(
-                          hint: 'Password',
-                          obscure: true,
+                        authTextField(
+                          hint: 'Enter your Password',
                           controller: state.passwordController,
+                          obscure: !state.showPassword,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              state.showPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: const Color(0xFF1976D2),
+                            ),
+                            onPressed: state.togglePasswordVisibility,
+                          ),
                         ),
 
                         const SizedBox(height: 32),
 
                         SizedBox(
                           width: double.infinity,
-                          height: 48, // 🔥 FIXED HEIGHT
+                          height: 50,
                           child: ElevatedButton(
                             onPressed: state.isLoading
-                                ? () {} // 🔥 KEEP ENABLED (no-op)
+                                ? null
                                 : () => state.signIn(context),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor:
-                                  Colors.black, // 🔥 no fade
-                              padding: EdgeInsets.zero,
+                              backgroundColor: const Color(
+                                0xFF2196F3,
+                              ), // Blue button
+                              foregroundColor: Colors.white,
+                              disabledBackgroundColor: const Color(
+                                0xFFBBDEFB,
+                              ), // Light blue when disabled
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                              shadowColor: const Color(
+                                0xFF2196F3,
+                              ).withOpacity(0.3),
                             ),
                             child: const Text(
                               'Sign In',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
 
-                        const SizedBox(height: 24),
-
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const CreateAccountPage(),
+                        const SizedBox(height: 32),
+                        // Create Account Section
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE3F2FD).withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: const Color(0xFF2196F3).withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Don't have an account? ",
+                                style: TextStyle(color: Color(0xFF546E7A)),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const CreateAccountPage(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    color: Color(0xFF1976D2),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              );
-                            },
-                            child: const Text('Create an account'),
+                              ),
+                            ],
                           ),
                         ),
+
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -106,17 +179,59 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _textField({
+  Widget authTextField({
     required String hint,
     required TextEditingController controller,
     bool obscure = false,
+    TextInputType keyboardType = TextInputType.text,
+    Widget? suffixIcon,
   }) {
     return TextField(
       controller: controller,
       obscureText: obscure,
+      keyboardType: keyboardType,
+      cursorColor: const Color(0xFF2196F3), // Blue cursor
+      style: const TextStyle(
+        color: Color(0xFF263238), // Dark text color
+      ),
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+        suffixIcon: suffixIcon,
+        hintStyle: const TextStyle(
+          color: Color(0xFF78909C),
+        ), // Light blue-gray hint
+        filled: true,
+        fillColor: const Color(0xFFF5FBFF), // Very light blue background
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color(0xFF2196F3), // Blue border when focused
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color(0xFFBBDEFB), // Light blue border
+            width: 1,
+          ),
+        ),
+        prefixIcon: hint.toLowerCase().contains('username')
+            ? const Icon(
+                Icons.account_circle_outlined,
+                color: Color(0xFF1976D2),
+              )
+            : hint.toLowerCase().contains('password')
+            ? const Icon(Icons.lock_outline, color: Color(0xFF1976D2))
+            : null,
       ),
     );
   }

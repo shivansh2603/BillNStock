@@ -82,6 +82,11 @@ class Util {
     Navigator.pop(context);
   }
 
+  static String formatGramToKg(double gram) {
+    final kg = gram / 1000;
+    return "${kg.toStringAsFixed(2)} kg";
+  }
+
   // static String parseHtmlString(String htmlString) {
   //   final document = html_parser.parse(htmlString);
   //   return document.body?.text ?? '';

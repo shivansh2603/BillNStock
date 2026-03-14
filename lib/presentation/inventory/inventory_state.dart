@@ -75,4 +75,29 @@ class InventoryState extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> updateProductPrice({
+    required int productId,
+    required double pricePerKg,
+    required BuildContext context,
+  }) async {
+    final body = {"pricePerKg": pricePerKg};
+
+    final result = await ApiServices.instance.makePutRequest(
+      body,
+      UrlEndPoint.updateProductPrice,
+      "$productId", // 👈 THIS is the `1`
+      context,
+    );
+
+    if (result is Success) {
+      await fetchInventory(context: context);
+      return true;
+    } else if (result is Failure) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("result.error.message")));
+    }
+    return false;
+  }
 }

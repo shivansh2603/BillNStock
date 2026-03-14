@@ -1,5 +1,5 @@
-import 'package:bill_n_stock/home/bill/billSummary/billSummary_state.dart';
-import 'package:bill_n_stock/home/bill/bill_state.dart';
+import 'package:bill_n_stock/presentation/bill/billSummary/billSummary_state.dart';
+import 'package:bill_n_stock/presentation/bill/bill_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

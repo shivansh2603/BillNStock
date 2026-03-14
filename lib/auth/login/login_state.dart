@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:bill_n_stock/helper/Util.dart';
 import 'package:bill_n_stock/api/ApiServices.dart';
 import 'package:bill_n_stock/api/ApiResponseStatus.dart';
-import 'package:bill_n_stock/home/home_screen.dart';
+import 'package:bill_n_stock/presentation/home_screen.dart';
 import 'package:bill_n_stock/helper/pref.dart';
 
 class LoginState extends ChangeNotifier {
   bool isLoading = false;
+  bool showPassword = false;
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -24,6 +25,11 @@ class LoginState extends ChangeNotifier {
       return false;
     }
     return true;
+  }
+
+  void togglePasswordVisibility() {
+    showPassword = !showPassword;
+    notifyListeners();
   }
 
   Future<void> signIn(BuildContext context) async {

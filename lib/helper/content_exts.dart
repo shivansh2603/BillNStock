@@ -11,7 +11,7 @@ extension CustomSizer on BuildContext {
       MediaQuery.of(this).size.width * (designWidth / viewportWidth);
 
   // Provides a vertically measured size respective to `height` and `viewportHeight`
-  double getHeigth(double designHeight, {double viewportHeight = 915}) =>
+  double getHeight(double designHeight, {double viewportHeight = 915}) =>
       MediaQuery.of(this).size.height * (designHeight / viewportHeight);
 
   // double getSize(double designWidth, double designHeight, {double viewportWidth = 360, double viewportHeight = 915,}) => MediaQuery.of(this).size
@@ -23,8 +23,11 @@ extension CustomSizer on BuildContext {
   double get deviceScreenHeigth => MediaQuery.of(this).size.height;
 
   // Provides width of the whole viewport
-  double getFontSize(double fontSize,
-          {double viewportHeight = 915, double viewportWidth = 360}) =>
+  double getFontSize(
+    double fontSize, {
+    double viewportHeight = 915,
+    double viewportWidth = 360,
+  }) =>
       (((MediaQuery.of(this).size.height * fontSize) / viewportHeight) +
           (MediaQuery.of(this).size.width * fontSize) / viewportWidth) /
       2;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bill_n_stock/helper/pref.dart';
 import 'package:bill_n_stock/auth/login/login.dart';
-import 'package:bill_n_stock/home/home_screen.dart';
+import 'package:bill_n_stock/presentation/home_screen.dart';
 
 class AppStart extends StatefulWidget {
   const AppStart({super.key});

@@ -345,6 +345,67 @@ class ApiServices {
     }
   }
 
+  Future<Result<dynamic, HttpException>> makePutRequest(
+    dynamic params,
+    UrlEndPoint endPoint,
+    String attachUrl,
+    BuildContext context, {
+    bool isLoader = true,
+  }) async {
+    if (!(await Util().isNetworkConnected())) {
+      return Failure(HttpException("No internet connection..."));
+    }
+
+    if (isLoader) {
+      EasyLoading.show(status: 'Loading...');
+    }
+
+    user = await Pref.getUserModelValue(PreferenceKey.userData.toString());
+    setHeader();
+
+    final url = baseUrl + endPoint.stringValue + attachUrl;
+
+    log("PUT URL: $url");
+    log("PUT BODY: ${jsonEncode(params)}");
+
+    try {
+      final response = await http
+          .put(Uri.parse(url), headers: headers, body: jsonEncode(params))
+          .timeout(const Duration(seconds: 180));
+
+      if (isLoader) EasyLoading.dismiss();
+
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedBody);
+      log("PUT RESPONSE: $data");
+
+      if (response.statusCode == 200) {
+        if ((data["status"] ?? "").toString().toLowerCase() == "success" ||
+            (data["responseCode"] != null &&
+                data["responseCode"] >= 200 &&
+                data["responseCode"] < 400)) {
+          return Success(data);
+        } else {
+          return Failure(
+            HttpException(data["responseMessage"] ?? "Unknown error"),
+          );
+        }
+      } else if (response.statusCode == 401) {
+        logoutUser(context);
+        return Failure(HttpException("Unauthorized"));
+      } else {
+        return Failure(
+          HttpException(
+            data["responseMessage"] ?? response.reasonPhrase ?? "Error",
+          ),
+        );
+      }
+    } catch (e) {
+      if (isLoader) EasyLoading.dismiss();
+      return Failure(HttpException(e.toString()));
+    }
+  }
+
   Future<Result<dynamic, HttpException>> makePUTMultipartRequest(
     Map<String, dynamic> params,
     List<http.MultipartFile> ducuments,
@@ -654,7 +715,7 @@ class ApiServices {
     }
     if (isLoader) {
       EasyLoading.show(
-        status: 'loading...',
+        status: 'Loading...',
         maskType: EasyLoadingMaskType.clear,
       );
     }
@@ -717,6 +778,61 @@ class ApiServices {
       if (isLoader) {
         EasyLoading.dismiss();
       }
+      return Failure(HttpException(e.toString()));
+    }
+  }
+
+  Future<Result<dynamic, HttpException>> validateUsername(
+    String username,
+    BuildContext context,
+  ) async {
+    if (!(await Util().isNetworkConnected())) {
+      return Failure(HttpException("No internet connection"));
+    }
+
+    final url =
+        "${baseUrl}${UrlEndPoint.validateUsername.stringValue}?username=$username";
+
+    log("🔍 Validate Username URL: $url");
+
+    try {
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 30));
+
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedBody);
+
+      if (response.statusCode == 200) {
+        return Success(data);
+      } else {
+        return Failure(HttpException(data["responseMessage"] ?? "Error"));
+      }
+    } catch (e) {
+      return Failure(HttpException(e.toString()));
+    }
+  }
+
+  Future<Result<dynamic, HttpException>> validateContactNumber(
+    String contactNumber,
+    BuildContext context,
+  ) async {
+    final url =
+        "${baseUrl}auth/validate-contact-number?contactNumber=$contactNumber";
+
+    log("🔍 Validate Phonenumber URL: $url");
+
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedBody);
+
+      if (response.statusCode == 200) {
+        return Success(data);
+      } else {
+        return Failure(HttpException(data["responseMessage"] ?? "Error"));
+      }
+    } catch (e) {
       return Failure(HttpException(e.toString()));
     }
   }

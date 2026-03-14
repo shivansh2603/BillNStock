@@ -3,8 +3,8 @@ import 'package:bill_n_stock/api/ApiManager.dart';
 import 'package:bill_n_stock/api/ApiResponseStatus.dart';
 import 'package:bill_n_stock/api/ApiServices.dart';
 import 'package:bill_n_stock/helper/Util.dart';
-import 'package:bill_n_stock/home/bill/bill_state.dart';
-import 'package:bill_n_stock/home/home_screen.dart';
+import 'package:bill_n_stock/presentation/bill/bill_state.dart';
+import 'package:bill_n_stock/presentation/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class BillsummaryState extends ChangeNotifier {
